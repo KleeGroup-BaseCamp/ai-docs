@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <img src="data:image/png;base64,{{ data }}" alt="" height="1000" ,width="600">
+
+      </div>
+  </div>
+</div>
+  <body>
+    <img src="data:image/png;base64,{{ data }}" alt="" height="250" ,width="250">
+  </body>
+  <button type="submit" value="Submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Submit</button>
+{% endblock %}
