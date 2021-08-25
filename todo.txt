@@ -1,6 +1,0 @@
--faire l'architecture
--rentrer les données
--explorer les données
--Clustering:
-    -faire modeles
-    -
