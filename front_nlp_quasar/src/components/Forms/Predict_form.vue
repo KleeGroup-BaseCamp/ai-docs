@@ -77,12 +77,12 @@ export default {
     },
     uploadfile(file) {
       return {
-        url: 'http://127.0.0.1:8000/train_test/predict/',
+        url: '/train_test/predict/',
         method: 'POST',
       }
     },
     async onfinish() {
-      const url= 'http://127.0.0.1:8000/train_test/predict/'
+      const url= '/train_test/predict/'
       var parameters={'uuid':this.data_algo.uuid,
                       'algo_name':this.data_algo.algo_name
                       }
@@ -103,7 +103,7 @@ export default {
       this.data_algo.download=false
     },
     async get_predict() {
-      const url = "http://127.0.0.1:8000/train_test/predict/"
+      const url = "/train_test/predict/"
       var parameters =this.data_algo
       console.log(parameters.uuid)
       let response =axios.get(url, {

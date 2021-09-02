@@ -75,7 +75,7 @@ export default {
         spinner:QSpinnerFacebook,
         delay: 400 // ms
       })  
-      const url = "http://127.0.0.1:8000/train_test/algos/"
+      const url = "/train_test/algos/"
       var parameters =this.$refs.AlgoForm.data_algo
       let response = await axios.post(url, parameters)
       .catch(error => {
@@ -98,7 +98,7 @@ export default {
         spinner:QSpinnerFacebook,
         delay: 400 // ms
       })  
-      const url = "http://127.0.0.1:8000/train_test/algos/"
+      const url = "/train_test/algos/"
       var parameters =this.$refs.ClusterForm.data_algo
       let response = await axios.post(url, parameters)
       .catch(error => {
@@ -120,7 +120,7 @@ export default {
         spinner:QSpinnerFacebook,
         delay: 400 // ms
       })  
-      const url = "http://127.0.0.1:8000/train_test/algos/"
+      const url = "/train_test/algos/"
       var parameters =this.$refs.RemoveForm.data_remove
       console.log(parameters)
       let response = await axios.delete(url, { data: { name: parameters.name.toString() } })
@@ -140,13 +140,13 @@ export default {
     },
 
     async refresh_list(){
-      const url_data = "http://127.0.0.1:8000/donnees/dataset_models/"
+      const url_data = "/donnees/dataset_models/"
       let response_data = await axios.get(url_data)
       const names_data = response_data.data.map((dict) => dict.name)
       this.$refs.AlgoForm.data_algo.dataset_options=names_data
       this.$refs.ClusterForm.dataset_options=names_data
       this.$refs.AlgoForm.data_algo.Algos_options=["Random Forest", "XGBoost", ].sort()
-      const url = "http://127.0.0.1:8000/train_test/algos/"
+      const url = "/train_test/algos/"
       let response_algos = await axios.get(url)
       console.log(response_algos)
       const names_algo = response_algos.data.map((dict) => dict.algo_name)

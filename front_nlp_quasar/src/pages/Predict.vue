@@ -30,7 +30,7 @@ export default {
   methods: {
     
     async refresh_list(){
-      const url = "http://127.0.0.1:8000/train_test/algos/"
+      const url = "/train_test/algos/"
       let response = await axios.get(url)
       var names = response.data.map((dict) => dict.algo_name)
       names.push("")
@@ -46,7 +46,7 @@ export default {
         spinner:QSpinnerFacebook,
         delay: 400 // ms
       })  
-      const url = "http://127.0.0.1:8000/train_test/predict/"
+      const url = "/train_test/predict/"
       var parameters =this.$refs.PredictionForm.data_algo
       console.log(parameters.uuid)
       let response =axios.get(url, {

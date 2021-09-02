@@ -59,7 +59,7 @@ async mounted() {
         spinner:QSpinnerFacebook,
         delay: 400 // ms
       })  
-      const url = "http://127.0.0.1:8000/donnees/dataset_models/"
+      const url = "/donnees/dataset_models/"
       var parameters =this.$refs.AddForm.data_add
       console.log(parameters)
       let response = await axios.post(url, parameters)
@@ -82,7 +82,7 @@ async mounted() {
         spinner:QSpinnerFacebook,
         delay: 400 // ms
       })  
-      const url = "http://127.0.0.1:8000/donnees/dataset_models/"
+      const url = "/donnees/dataset_models/"
       var parameters =this.$refs.RemoveForm.data_remove
       let response = await axios.delete(url, { data: { name: parameters.name.toString() } })
       .catch(error => {
@@ -104,7 +104,7 @@ async mounted() {
                                         "name":""}
     },
     async refresh_list(){
-      const url = "http://127.0.0.1:8000/donnees/dataset_models/"
+      const url = "/donnees/dataset_models/"
       let response = await axios.get(url)
       const names = response.data.map((dict) => dict.name)
       this.$refs.RemoveForm.data_remove.name_options=names
