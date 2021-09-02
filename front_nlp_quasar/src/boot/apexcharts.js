@@ -1,8 +1,8 @@
-import VueApexCharts from 'vue-apexcharts'
+/*import VueApexCharts from "vue3-apexcharts";
 
-// leave the export, even if you don't use it
-export default async ({ Vue }) => {
+export default {
+  components: {
+    apexchart: VueApexCharts,
+  },
+};*/
 
-    Vue.component('apexchart', VueApexCharts)
-
-}
