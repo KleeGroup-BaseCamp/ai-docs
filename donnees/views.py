@@ -33,7 +33,6 @@ class dataset_modelViewSet(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, format=None):
-        print(request.data,request.data["name"])
         dataset = dataset_model.objects.get(name=request.data["name"])
         dataset_entry.objects.filter(article_dataset=request.data["name"]).delete()
         dataset.delete()

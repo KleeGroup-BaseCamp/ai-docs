@@ -107,8 +107,8 @@ def train_algo(df,algo,name,nb_clusters='auto'):
         list_to_save=[pipe,Label_Scaler,ML_algo]
         
         ML_algo.score(X_test,y_test_scaler)
-        y_pred=pipe.predict(X_test)
-        target_names = list(Label_Scaler.inverse_transform(range(0,len(X_test.article_class.unique()))))
+        y_pred=ML_algo.predict(X_test)
+        target_names = list(Label_Scaler.inverse_transform(range(0,len(test.article_class.unique()))))
         
         report=classification_report(y_test_scaler, y_pred, output_dict=True)
         report = pd.DataFrame(report)

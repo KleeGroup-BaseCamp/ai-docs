@@ -48,10 +48,11 @@ class AlgoViewSet(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, format=None):
-        # print(request.data,request.data["name"])
-        # dataset = dataset_model.objects.get(name=request.data["name"])
-        # print(dataset)
-        # dataset.delete()
+        algo = Algo.objects.get(algo_name=request.data["name"])
+        print("./models/"+str(algo))
+        if os.path.isdir("./models/"+str(algo)):
+            shutil.rmtree("./models/"+str(algo))
+        algo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class PredictViewSet(viewsets.ViewSet):
