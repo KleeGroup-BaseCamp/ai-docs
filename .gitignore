@@ -1,0 +1,22 @@
+# python cache
+*.py[oc]
+__pycache__/
+
+# IDE files
+.vscode/
+
+#db
+*.sqlite3
+
+# migrations files
+migrations/
+
+# ai-docs python cache files
+/cache/
+/models/
+
+# Front release files
+/front_nlp_quasar/dist
+
+# Front node_modules
+/front_nlp_quasar/node_modules
