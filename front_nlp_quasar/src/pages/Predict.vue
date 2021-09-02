@@ -14,6 +14,7 @@
 <script>
 import Predict_selection from "../components/Forms/Predict_form";
 import axios from "axios";
+import { QSpinnerFacebook } from 'quasar'
 export default {
   components: {
     Predict_selection,
@@ -41,6 +42,10 @@ export default {
     },
     
     async get_predict() {
+      this.$q.loading.show({
+        spinner:QSpinnerFacebook,
+        delay: 400 // ms
+      })  
       const url = "http://127.0.0.1:8000/train_test/predict/"
       var parameters =this.$refs.PredictionForm.data_algo
       console.log(parameters.uuid)
@@ -58,18 +63,10 @@ export default {
           link.click();
           console.log(this.$refs.PredictionForm.uploader)
           })
+          
+      this.$q.loading.hide()
         }
         
-      // let response = await axios.get(url,{ params: { uuid: parameters.uuid } } )
-      // .catch(error => {
-      //   this.error = true;
-      // })
-      // .then(response => {
-      //   this.blank_fields()
-      //   if (!this.error){
-      //     console.log("posted",response)
-      //   }
-      // })
   }
 }
 </script>

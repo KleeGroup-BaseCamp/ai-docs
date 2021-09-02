@@ -71,26 +71,32 @@ async mounted() {
         this.refresh_list()
         this.blank_fields()
         console.log(response)
-        if (!this.error){
-          this.creteSucceed(response);
+        if (!this.error){ 
           console.log("posted",response)
         }
       });
     this.$q.loading.hide()
     },
     async delete_dataset() {
+      this.$q.loading.show({
+        spinner:QSpinnerFacebook,
+        delay: 400 // ms
+      })  
       const url = "http://127.0.0.1:8000/donnees/dataset_models/"
       var parameters =this.$refs.RemoveForm.data_remove
       let response = await axios.delete(url, { data: { name: parameters.name.toString() } })
-      console.log("response",response)
       .catch(error => {
+        this.error = true;
+        this.notifyError(error);
       })
       .then(response => {
         this.refresh_list()
         this.blank_fields()
         if (!this.error){
+          console.log("suppressed",response)
         }
       });
+    this.$q.loading.hide()
     },
     async blank_fields(){
           this.$refs.RemoveForm.data_remove={"name":""}

@@ -7,6 +7,7 @@
 
 import VueApexCharts from 'vue-apexcharts'
 import CardBase from 'components/Cards/CardBase'
+import { QSpinnerFacebook } from 'quasar'
 export default {
   name: 'PageIndex',
   components: {

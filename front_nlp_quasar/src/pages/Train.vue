@@ -34,6 +34,7 @@
 import Algo_selection from "../components/Forms/Select_algorithms";
 import Clustering_selection from "../components/Forms/Select_Clustering";
 import axios from "axios";
+import { QSpinnerFacebook } from 'quasar'
 export default {
   components: {
     Algo_selection,
@@ -56,6 +57,10 @@ export default {
   methods: {
     
     async post_algo_train() {
+      this.$q.loading.show({
+        spinner:QSpinnerFacebook,
+        delay: 400 // ms
+      })  
       const url = "http://127.0.0.1:8000/train_test/algos/"
       var parameters =this.$refs.AlgoForm.data_algo
       let response = await axios.post(url, parameters)
@@ -71,9 +76,15 @@ export default {
           console.log("posted",response)
         }
       });
+      
+    this.$q.loading.hide()
     },
 
     async post_clustering_train() {
+      this.$q.loading.show({
+        spinner:QSpinnerFacebook,
+        delay: 400 // ms
+      })  
       const url = "http://127.0.0.1:8000/train_test/algos/"
       var parameters =this.$refs.ClusterForm.data_algo
       console.log(this.$refs.ClusterForm.data_algo)
@@ -90,6 +101,8 @@ export default {
           console.log("posted",response)
         }
       });
+      
+    this.$q.loading.hide()
     },
 
     async refresh_list(){
