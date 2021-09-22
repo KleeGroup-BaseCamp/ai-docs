@@ -7,7 +7,7 @@
     <div>
       <apexchart
         width="500"
-        type="bar"
+        type="heatmap"
         :options="chartOptions"
         :series="series">
       </apexchart>

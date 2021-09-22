@@ -1,7 +1,7 @@
 <template>
   <q-card class="create-card">
     <q-card-section>
-      <div class="text-subtitle1 text-primary">Supprimer des données</div>
+      <div class="text-subtitle1 text-primary">Supprimer</div>
     </q-card-section>
     <q-separator color="accent" inset />
     <q-card-section class="column">

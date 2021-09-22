@@ -10,7 +10,6 @@ from sklearn.ensemble import RandomForestClassifier
 from mlxtend.feature_selection import ColumnSelector
 from sklearn.cluster import KMeans
 from sklearn.pipeline import Pipeline
-from nltk.corpus import stopwords
 import xgboost as xgb
 import matplotlib.pyplot as plt
 from xgboost.sklearn import XGBClassifier
@@ -81,7 +80,6 @@ def train_algo(df,algo,name,nb_clusters='auto'):
         train,test=train_test_split(df,test_size=0.2)
         word_vectorizer = TfidfVectorizer(
                             strip_accents='unicode',
-                            stop_words=stopwords.words('french'),
                             ngram_range=(1, 1),
                             min_df=0.03,
                             max_df=0.90,
@@ -124,7 +122,6 @@ def train_algo(df,algo,name,nb_clusters='auto'):
         train,test=train_test_split(df,test_size=0.2)
         word_vectorizer = TfidfVectorizer(
                             strip_accents='unicode',
-                            stop_words=stopwords.words('french'),
                             ngram_range=(1, 1),
                             min_df=0.03,
                             max_df=0.90,
@@ -168,7 +165,6 @@ def train_algo(df,algo,name,nb_clusters='auto'):
         print(nlp.pipe_names)
         word_vectorizer = TfidfVectorizer(
                                             strip_accents='unicode',
-                                            stop_words=stopwords.words('french'),
                                             ngram_range=(1, 1),
                                             min_df=0.03,
                                             max_df=0.90,
@@ -191,7 +187,6 @@ def train_algo(df,algo,name,nb_clusters='auto'):
             data.append(filtered)
         tfidf_vectorizer = TfidfVectorizer(
                                             strip_accents='unicode',
-                                            stop_words=stopwords.words('french'),
                                             ngram_range=(1, 1),
                                             min_df=0.03,
                                             max_df=0.90,

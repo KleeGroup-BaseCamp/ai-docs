@@ -18,7 +18,6 @@ from sklearn.decomposition import PCA
 from sklearn.feature_extraction.text import TfidfVectorizer
 from matplotlib.colors import Normalize
 import matplotlib.cm as cm
-from nltk.corpus import stopwords
 import ocrmypdf
 
 def extract(path,pages_to_extract=None):

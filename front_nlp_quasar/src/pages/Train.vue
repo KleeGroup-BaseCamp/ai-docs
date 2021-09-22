@@ -107,7 +107,6 @@ export default {
       })
       .then(response => {
         this.blank_fields()
-        console.log(response)
         if (!this.error){
           console.log("posted",response)
         }
