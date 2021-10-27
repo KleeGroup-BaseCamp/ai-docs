@@ -1,0 +1,9 @@
+#Debug
+#Vanilla
+#docker run -it -v ~/git/ai-docs/:/root -v /documents/:/documents/ python:3.8-slim /bin/bash
+#Custom
+#docker run -it -v ~/git/ai-docs:/home/user1 -v /documents/:/documents/ python38 /bin/bash
+
+#API
+sudo docker run -it -p 8000:8000 -v ~/git/ai-docs:/home/user1 -v /documents/:/documents/ python38
+
