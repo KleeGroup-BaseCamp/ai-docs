@@ -5,4 +5,4 @@
 #docker run -it -v /data/ai-docs-data/ai-docs:/home/user1 -v /documents/:/documents/ python38 /bin/bash
 
 #API
-sudo docker run --rm -d -p 8000:8000 -v /data/ai-docs-data/ai-docs:/home/user1 -v /documents/:/documents/ python38
+sudo docker run --rm -d -p 8000:8000 -v /data/ai-docs-data/ai-docs:/home/user1 -v /data/ai-docs-data/documents:/data/ai-docs-data/documents -v /documents:/documents python38

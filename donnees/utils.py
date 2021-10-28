@@ -1,24 +1,28 @@
-import matplotlib.pyplot as plt
-import base64
-from io import BytesIO
 import io
-import numpy as np
-from django.shortcuts import render
+from io import BytesIO
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+import base64
 import urllib
 import pandas as pd
 import os 
 import fitz
 import re
-import sys
 from wordcloud import WordCloud
 from stop_words import get_stop_words
 import spacy
+import logging
+import ocrmypdf
+
+from django.shortcuts import render
+
 from sklearn.preprocessing import StandardScaler,LabelEncoder
 from sklearn.decomposition import PCA
 from sklearn.feature_extraction.text import TfidfVectorizer
 from matplotlib.colors import Normalize
-import matplotlib.cm as cm
-import ocrmypdf
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 def extract(path,pages_to_extract=None):
     with fitz.open(path) as doc:
@@ -30,7 +34,7 @@ def extract(path,pages_to_extract=None):
     return text,page_count,len(text)
 
 def create_dataset(path,key):
-    ['tok2vec', 'morphologizer', 'parser', 'attribute_ruler', 'lemmatizer', 'ner']
+    #['tok2vec', 'morphologizer', 'parser', 'attribute_ruler', 'lemmatizer', 'ner']
     nlp = spacy.load("fr_core_news_lg")
     for i in nlp.pipe_names:
         if not(i in ['tok2vec', 'lemmatizer', 'morphologizer']):
@@ -38,6 +42,7 @@ def create_dataset(path,key):
 
     tuples=[]
     count_elem=0
+
     for elem in os.listdir(path):
         if os.path.isdir(os.path.join(path,elem)):
             count_elem+=1
@@ -55,24 +60,28 @@ def create_dataset(path,key):
                         lemmatized=" ".join([token.lemma_ for token in doc if not(token.is_oov or token.is_stop) and (token.is_alpha or token.is_punct) and len(token)>1 ])
                         tuples.append((os.path.join(path,dossier,file),nb_pages,nb_text,text,s,lemmatized,dossier))
                     
-        df=pd.DataFrame(tuples, columns =['article_name','articles_nb_pages','articles_nb_text','content_text_join','article_text','articles_lemmes', 'article_class'])
+        df = pd.DataFrame(tuples, columns =['article_name','articles_nb_pages','articles_nb_text','content_text_join','article_text','articles_lemmes', 'article_class'])
         df['articles_Non_Alphanumeric'] = df['content_text_join'].str.count(r'[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü-\t\r\n\v\040]')
-        df['article_dataset']=key
+        df['article_dataset'] = key
     else:
+        nb_total_files = len(os.listdir(path))
+        nb_processed_file = 0
         for file in os.listdir(path):
-            if file.endswith(".pdf"):    
-                text,nb_pages,nb_text=extract(os.path.join(path,file))
-                s=text.replace("\n"," ")
+            if file.endswith(".pdf"):
+                logger.info('Processing ({nb_processed_file}/{nb_total_files}) {path}')
+                text, nb_pages, nb_text = extract(os.path.join(path,file))
+                s = text.replace("\n"," ")
                 s = re.sub('[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü]+', ' ', s)
-                if len(s)>nlp.max_length:
-                    s=s[:nlp.max_length]
+                if len(s) > nlp.max_length:
+                    s = s[:nlp.max_length]
                 doc = nlp(s)
-                lemmatized=" ".join([token.lemma_ for token in doc if not(token.is_oov or token.is_stop) and (token.is_alpha or token.is_punct) and len(token)>1])
-                tuples.append((os.path.join(path,file),nb_pages,nb_text,text,s,lemmatized,"a_determiner"))
-                    
-        df=pd.DataFrame(tuples, columns =['article_name','articles_nb_pages','articles_nb_text','content_text_join','article_text','articles_lemmes', 'article_class'])
+                lemmatized = " ".join([token.lemma_ for token in doc if not(token.is_oov or token.is_stop) and (token.is_alpha or token.is_punct) and len(token)>1])
+                tuples.append((os.path.join(path,file), nb_pages, nb_text, text, s, lemmatized, "a_determiner"))
+            nb_processed_file = nb_processed_file + 1
+
+        df = pd.DataFrame(tuples, columns = ['article_name','articles_nb_pages','articles_nb_text','content_text_join','article_text','articles_lemmes', 'article_class'])
         df['articles_Non_Alphanumeric'] = df['content_text_join'].str.count(r'[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü-\t\r\n\v\040]')
-        df['article_dataset']=key
+        df['article_dataset'] = key
 
     path_preprocess='./cache/preprocessed/'
     if not(os.path.exists(path_preprocess)):

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import *
 
 
-class Algo_Serializer(serializers.HyperlinkedModelSerializer):
+class AlgoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Algo
         fields = ['algo_name','algo_type','dataset']

@@ -1,20 +1,25 @@
+import pandas as pd
+import csv
+import shutil
+# import the logging library
+import logging
+
 from django.shortcuts import render
 from rest_framework import viewsets,permissions
-from .serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-import json
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from donnees.models import *
-from .utils import *
-import pandas as pd
-import uuid
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.http import HttpResponse
-import csv
-import shutil
+
+from donnees.models import *
+from .serializers import *
+from .utils import *
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 class AlgoViewSet(APIView):
     """
@@ -23,24 +28,23 @@ class AlgoViewSet(APIView):
     permission_classes = [permissions.AllowAny]
     def get(self, request, format=None):
         Algos = Algo.objects.all().order_by('id')
-        serializer = Algo_Serializer(Algos, many=True)
+        serializer = AlgoSerializer(Algos, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = Algo_Serializer(data=request.data)
+        serializer = AlgoSerializer(data=request.data)
         if serializer.is_valid():
             if  Algo.objects.filter(algo_name=serializer.validated_data['algo_name']).exists():
                 return Response("Already exists", status=status.HTTP_208_ALREADY_REPORTED)
             else:
                 df = pd.DataFrame.from_records(
-                    dataset_entry.objects.filter(article_dataset=serializer.validated_data['dataset']).values_list(
+                    DatasetEntry.objects.filter(article_dataset=serializer.validated_data['dataset']).values_list(
                                             'article_name','articles_nb_pages','articles_nb_text','article_text','articles_lemmes', 'article_class')
                 )
                 df.columns=['article_name','articles_nb_pages','articles_nb_text','article_text','articles_lemmes', 'article_class']
                 if serializer.validated_data['algo_type']=='k-means':
                     ML_algo=train_algo(df,serializer.validated_data['algo_type'],serializer.validated_data['algo_name'],nb_clusters=request.data.get('cluster'))
                     serializer.save()
-                
                 else:
                     ML_algo=train_algo(df,serializer.validated_data['algo_type'],serializer.validated_data['algo_name'])
                     serializer.save()
@@ -84,7 +88,7 @@ class PredictViewSet(viewsets.ViewSet):
                 pass    
             path = default_storage.save(DIR+file_name, ContentFile(pdf.read()))
         return Response(folder, status=status.HTTP_201_CREATED)
-        
+
 
     def get_results(self, request):
         

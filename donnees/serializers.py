@@ -2,12 +2,12 @@ from rest_framework import serializers
 from .models import *
 
 
-class Dataset_models_Serializer(serializers.HyperlinkedModelSerializer):
+class DatasetModelsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = dataset_model
+        model = DatasetModel
         fields = ['dataset_path','name']
     def create(self, validated_data):
-        return dataset_model.objects.create(**validated_data)
+        return DatasetModel.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         instance.dataset_path = validated_data.get('dataset_path', instance.dataset_path)
@@ -15,13 +15,13 @@ class Dataset_models_Serializer(serializers.HyperlinkedModelSerializer):
         instance.save()
         return instance
         
-class Dataset_entry_Serializer(serializers.HyperlinkedModelSerializer):
+class DatasetEntrySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = dataset_entry
+        model = DatasetEntry
         fields = ['article_name', 'articles_nb_pages', 'articles_nb_text', 'article_text', 'articles_lemmes',
          'article_class', 'articles_Non_Alphanumeric','article_dataset']
     def create(self, validated_data):
-        return dataset_entry.objects.create(**validated_data)
+        return DatasetEntry.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         instance.article_name = validated_data.get('article_name', instance.article_name)
