@@ -9,9 +9,8 @@ RUN apt-get update && apt-get install -y ghostscript
 RUN pip3 install ocrmypdf
 RUN apt-get install -y tesseract-ocr
 
-RUN useradd -ms /bin/bash user1
+RUN groupadd group1 && useradd --uid 1000 --groups group1 -ms /bin/bash user1
 USER user1
 WORKDIR /home/user1
 
 CMD python manage.py makemigrations && python manage.py migrate && python manage.py runserver
-
