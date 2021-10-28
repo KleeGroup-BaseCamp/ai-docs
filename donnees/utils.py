@@ -68,15 +68,18 @@ def create_dataset(path,key):
         nb_processed_file = 0
         for file in os.listdir(path):
             if file.endswith(".pdf"):
-                logger.info('Processing ({nb_processed_file}/{nb_total_files}) {path}')
-                text, nb_pages, nb_text = extract(os.path.join(path,file))
-                s = text.replace("\n"," ")
-                s = re.sub('[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü]+', ' ', s)
-                if len(s) > nlp.max_length:
-                    s = s[:nlp.max_length]
-                doc = nlp(s)
-                lemmatized = " ".join([token.lemma_ for token in doc if not(token.is_oov or token.is_stop) and (token.is_alpha or token.is_punct) and len(token)>1])
-                tuples.append((os.path.join(path,file), nb_pages, nb_text, text, s, lemmatized, "a_determiner"))
+                try:
+                    logger.info(f'Processing ({nb_processed_file}/{nb_total_files}) {path}')
+                    text, nb_pages, nb_text = extract(os.path.join(path,file))
+                    s = text.replace("\n"," ")
+                    s = re.sub('[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü]+', ' ', s)
+                    if len(s) > nlp.max_length:
+                        s = s[:nlp.max_length]
+                    doc = nlp(s)
+                    lemmatized = " ".join([token.lemma_ for token in doc if not(token.is_oov or token.is_stop) and (token.is_alpha or token.is_punct) and len(token)>1])
+                    tuples.append((os.path.join(path,file), nb_pages, nb_text, text, s, lemmatized, "a_determiner"))
+                except Exception:
+                    logging.exception(f"Error while extracting {path}")
             nb_processed_file = nb_processed_file + 1
 
         df = pd.DataFrame(tuples, columns = ['article_name','articles_nb_pages','articles_nb_text','content_text_join','article_text','articles_lemmes', 'article_class'])
