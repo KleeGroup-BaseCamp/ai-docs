@@ -50,16 +50,19 @@ def create_dataset(path,key):
         for dossier in os.listdir(path):
             if not("." in dossier) and os.path.isdir(os.path.join(path,dossier)):
                 for file in os.listdir(os.path.join(path,dossier)):
-                    if file.endswith(".pdf"):    
-                        text,nb_pages,nb_text=extract(os.path.join(path,dossier,file))
-                        s=text.replace("\n"," ")
-                        s = re.sub('[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü]+', ' ', s)
-                        if len(s)>nlp.max_length:
-                            s=s[:nlp.max_length]
-                        doc = nlp(s)
-                        lemmatized=" ".join([token.lemma_ for token in doc if not(token.is_oov or token.is_stop) and (token.is_alpha or token.is_punct) and len(token)>1 ])
-                        tuples.append((os.path.join(path,dossier,file),nb_pages,nb_text,text,s,lemmatized,dossier))
-                    
+                    if file.endswith(".pdf"):
+                        try:
+                            text, nb_pages, nb_text = extract(os.path.join(path,dossier,file))
+                            s = text.replace("\n"," ")
+                            s = re.sub('[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü]+', ' ', s)
+                            if len(s)>nlp.max_length:
+                                s = s[:nlp.max_length]
+                            doc = nlp(s)
+                            lemmatized=" ".join([token.lemma_ for token in doc if not(token.is_oov or token.is_stop) and (token.is_alpha or token.is_punct) and len(token)>1 ])
+                            tuples.append((os.path.join(path, dossier, file), nb_pages, nb_text, text, s, lemmatized, dossier))
+                        except Exception:
+                            logging.exception(f"Error while extracting {path}")
+
         df = pd.DataFrame(tuples, columns =['article_name','articles_nb_pages','articles_nb_text','content_text_join','article_text','articles_lemmes', 'article_class'])
         df['articles_Non_Alphanumeric'] = df['content_text_join'].str.count(r'[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü-\t\r\n\v\040]')
         df['article_dataset'] = key
@@ -69,7 +72,7 @@ def create_dataset(path,key):
         for file in os.listdir(path):
             if file.endswith(".pdf"):
                 try:
-                    logger.info(f'Processing ({nb_processed_file}/{nb_total_files}) {path}')
+                    logger.info(f"Processing ({nb_processed_file}/{nb_total_files}) {path}")
                     text, nb_pages, nb_text = extract(os.path.join(path,file))
                     s = text.replace("\n"," ")
                     s = re.sub('[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü]+', ' ', s)
@@ -82,7 +85,7 @@ def create_dataset(path,key):
                     logging.exception(f"Error while extracting {path}")
             nb_processed_file = nb_processed_file + 1
 
-        df = pd.DataFrame(tuples, columns = ['article_name','articles_nb_pages','articles_nb_text','content_text_join','article_text','articles_lemmes', 'article_class'])
+        df = pd.DataFrame(tuples, columns = ['article_name', 'articles_nb_pages', 'articles_nb_text', 'content_text_join', 'article_text', 'articles_lemmes', 'article_class'])
         df['articles_Non_Alphanumeric'] = df['content_text_join'].str.count(r'[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü-\t\r\n\v\040]')
         df['article_dataset'] = key
 
