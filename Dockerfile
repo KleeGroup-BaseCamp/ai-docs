@@ -9,7 +9,7 @@ RUN pip3 install -r requirements.txt  --default-timeout=1000
 
 RUN apt-get update && apt-get install -y ghostscript
 RUN pip3 install ocrmypdf
-RUN apt-get install -y tesseract-ocr
+RUN apt-get install -y tesseract-ocr tesseract-ocr-fra
 
 RUN groupadd --gid 1000 group1 && useradd --uid 1000 --groups group1 -ms /bin/bash user1
 USER user1
