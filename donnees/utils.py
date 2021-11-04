@@ -94,24 +94,35 @@ def create_dataset(path,key):
     if not(os.path.exists(path_preprocess)):
         os.makedirs(path_preprocess)
 
-    for index,row in df.iterrows():
+    nb_rows = df.shape[0]
+    logger.info(f"Nb files to OCR : {nb_rows}")
+
+    # Todo : Filter subset of the dataframe with selection brakets
+    for index, row in df.iterrows():
+        
         if row.articles_nb_text<250 or row.articles_Non_Alphanumeric/row.articles_nb_text>0.5 :
-            print("ocr")
-            ocrmypdf.ocr(input_file=row.article_name, output_file=path_preprocess+'preprocessed.pdf',output_type="pdf"\
-                         ,remove_background=False, deskew=True, language='eng+fra', sidecar=path_preprocess+'side.txt')
-            with open(path_preprocess+"side.txt",'r') as f:
-                text = f.read()
-                df.loc[index,'content_text_join'] = text
-                s=text.replace("\n"," ")
-                s = re.sub('[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü]+', ' ', s)
-                if len(s)>nlp.max_length:
-                    s=s[:nlp.max_length]
-                doc = nlp(s)
-                lemmatized=" ".join([token.lemma_ for token in doc if not(token.is_oov or token.is_stop) and (token.is_alpha or token.is_punct) and len(token)>1])
-                df.loc[index,'content_text_join'] = text
-                df.loc[index,'article_text'] = s
-                df.loc[index,'articles_lemmes'] = lemmatized
-    
+            logger.info(f" {index} / {nb_rows} is a scanned document. Applying OCR.")
+
+            try:
+                ocrmypdf.ocr(input_file=row.article_name, output_file=path_preprocess+'preprocessed.pdf', output_type="pdf", \
+                            remove_background=False, deskew=True, language='eng+fra', sidecar=path_preprocess+'side.txt')
+                with open(path_preprocess+"side.txt",'r') as f:
+                    text = f.read()
+                    df.loc[index,'content_text_join'] = text
+                    s=text.replace("\n"," ")
+                    s = re.sub('[^0-9`-z?-ZÀ-ÁÈ-ËÒ-ÖÙ-Üà-âç-ëî-ïñ-öù-ü]+', ' ', s)
+                    if len(s)>nlp.max_length:
+                        s=s[:nlp.max_length]
+                    doc = nlp(s)
+                    lemmatized=" ".join([token.lemma_ for token in doc if not(token.is_oov or token.is_stop) and (token.is_alpha or token.is_punct) and len(token)>1])
+                    df.loc[index,'content_text_join'] = text
+                    df.loc[index,'article_text'] = s
+                    df.loc[index,'articles_lemmes'] = lemmatized
+            except Exception:
+                logging.exception(f"Error while OCRing {row.article_name}. Skipping.")
+        else:
+            logger.info(f" {index} / {nb_rows} is a digital document. No OCR.")
+
     return df
 
 def create_wordcloud(text):
