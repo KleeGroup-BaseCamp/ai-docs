@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED=1
 RUN pip3 install --upgrade pip
 RUN pip3 install virtualenv
 ADD requirements.txt .
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt  --default-timeout=1000
 
 RUN apt-get update && apt-get install -y ghostscript
 RUN pip3 install ocrmypdf

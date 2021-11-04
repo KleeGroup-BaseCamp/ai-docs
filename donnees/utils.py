@@ -69,6 +69,7 @@ def create_dataset(path,key):
     else:
         nb_total_files = len(os.listdir(path))
         nb_processed_file = 0
+        logger.info(f"Nb files to process : {nb_total_files} Path: {path}")
         for file in os.listdir(path):
             if file.endswith(".pdf"):
                 try:
