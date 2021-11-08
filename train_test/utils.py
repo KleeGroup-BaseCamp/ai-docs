@@ -5,7 +5,7 @@ from sklearn.decomposition import NMF
 from sklearn.preprocessing import MinMaxScaler,LabelEncoder,StandardScaler
 from sklearn.model_selection import train_test_split,cross_val_score, KFold,GridSearchCV
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report,plot_confusion_matrix,confusion_matrix
+from sklearn.metrics import classification_report, plot_confusion_matrix, confusion_matrix, silhouette_score
 from sklearn.ensemble import RandomForestClassifier
 from mlxtend.feature_selection import ColumnSelector
 from sklearn.cluster import KMeans
@@ -17,6 +17,8 @@ import pickle
 import os
 from donnees.utils import *
 import spacy
+import json
+
 
 def create_TF_IDF(df):
     train,test=train_test_split(df,test_size=0.2)
@@ -45,7 +47,7 @@ def create_TF_IDF_cluster(df):
         max_df=0.90,
         max_features=500)
 
-    full_word_features =word_vectorizer.fit_transform(df['articles_lemmes'])
+    full_word_features = word_vectorizer.fit_transform(df['articles_lemmes'])
 
     full=pd.concat((pd.DataFrame(full_word_features.toarray()),pd.DataFrame(df['article_class'].reset_index(drop=True)) ),axis=1)
     return full
@@ -205,6 +207,17 @@ def train_algo(df,algo,name,nb_clusters='auto'):
         pd.concat(clusters_topics,axis=0).to_csv(DIR+"topics.csv")
         df.to_csv(DIR+"dataframe.csv")
         list_to_save=[pipe,mapping_dict]
+
+        score = {}
+
+        df_col = pipe.named_steps["col_selector"].transform(df)
+        features = pipe.named_steps["TF_IDF"].transform(df_col)
+        sil_score = silhouette_score(features, ML_algo.labels_, metric='euclidean')
+        score['silhouette'] = sil_score
+        score['inertia'] = ML_algo.inertia_
+
+        with open(DIR+"score.json", "w") as outfile:
+            json.dump(score, outfile)
     
     pkl_filename = DIR+algo+'.pkl'
     with open(pkl_filename, 'wb') as file:
